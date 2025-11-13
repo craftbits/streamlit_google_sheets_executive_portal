@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/logs/
+
+# Local artifacts
+.idea/
+.vscode/
+*.log
+
+
