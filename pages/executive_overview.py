@@ -38,8 +38,7 @@ def _get_properties_df() -> pd.DataFrame:
 # ---------- Page entrypoint ----------
 
 def main() -> None:
-    """Executive overview home page (this is what app.py calls)."""
-
+    """Minimal placeholder so st.Page(executive_overview.main) works."""
     left, center, right = layout.centered_columns()
 
     with center:
@@ -47,6 +46,11 @@ def main() -> None:
             ":material/insights:",
             "Executive overview",
             subtitle=f"{config.COMPANY_NAME} • {config.DEFAULT_PORTFOLIO_NAME}",
+        )
+        st.write(
+            "This is a temporary placeholder for the Executive overview page.\n\n"
+            "If you're seeing this, the navigation wiring is working. "
+            "We can then drop in the full KPI + tabs UI."
         )
 
         # ----- Load data -----
