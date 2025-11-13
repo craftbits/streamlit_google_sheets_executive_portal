@@ -18,9 +18,12 @@ from datetime import date
 # App & branding
 # -----------------------------------------------------------------------------
 APP_NAME = "Executive Finance Portal"
-COMPANY_NAME = "EasySynergy"
+COMPANY_NAME = "ContourCFO"
 DEFAULT_PORTFOLIO_NAME = "Multifamily Portfolio"
 DEFAULT_CURRENCY = "USD"
+LOGO_IMAGE = "assets/contour_logo.png"   # set to None if you don't have a logo yet
+LOGO_ICON = "assets/contour_icon.png"    # optional small icon
+
 
 # Primary teal theme (matches .streamlit/config.toml)
 PRIMARY_COLOR = "#00897B"   # teal green
