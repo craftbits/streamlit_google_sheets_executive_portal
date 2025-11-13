@@ -1,23 +1,22 @@
-import streamlit as st
+# app.py
 
+import streamlit as st
 import config
 import layout
 
-# Import page modules
+# Import page modules as callables
 from pages import (
-    executive_overview,          # Home
-    collections_and_occupancy,   # Reports
-    financial_summary,           # Reports (high-level / T-12 combined for now)
-    properties,                  # Reference
-    scenarios,                   # We'll keep as a tool for now
+    executive_overview,
+    collections_and_occupancy,
+    financial_summary,
+    properties,
+    scenarios,
     file_downloader_page,
     tax_extractor_page,
     exit_value_page,
 )
 
-# -------------------------------------------------------------------
-# Global page config + CSS
-# -------------------------------------------------------------------
+# --- Global config & CSS ----------------------------------------------------
 st.set_page_config(
     page_title=config.APP_NAME,
     page_icon=":material/dashboard:",
@@ -25,17 +24,16 @@ st.set_page_config(
 )
 layout.inject_base_css()
 
-# Logo in sidebar (you can change paths in config.py if you like)
-try:
-    if config.LOGO_IMAGE:
-        st.logo(config.LOGO_IMAGE, icon_image=config.LOGO_ICON)
-except Exception:
-    # Fallback: just show app name if logo file doesn't exist yet
+# Logo / brand in sidebar
+if getattr(config, "LOGO_IMAGE", None):
+    try:
+        st.logo(config.LOGO_IMAGE, icon_image=getattr(config, "LOGO_ICON", None))
+    except Exception:
+        st.sidebar.title(config.COMPANY_NAME)
+else:
     st.sidebar.title(config.COMPANY_NAME)
 
-# -------------------------------------------------------------------
-# Page definitions (Streamlit 1.38+ navigation API)
-# -------------------------------------------------------------------
+# --- Define pages using st.Page (native navigation) -------------------------
 home_page = st.Page(
     executive_overview.main,
     title="Home",
@@ -52,8 +50,8 @@ collections_page = st.Page(
 
 financials_page = st.Page(
     financial_summary.main,
-    title="T-12 / high-level financial summary",
-    icon=":material/planner_review:",
+    title="Financial summary",
+    icon=":material/paid:",
     url_path="financials",
 )
 
@@ -92,30 +90,17 @@ scenarios_page_def = st.Page(
     url_path="scenarios",
 )
 
-# -------------------------------------------------------------------
-# Navigation sections (matching the original app’s sidebar layout)
-# -------------------------------------------------------------------
-nav = st.navigation(
+# --- Navigation menu (native) ----------------------------------------------
+pg = st.navigation(
     {
         "": [home_page],
         "Reports": [collections_page, financials_page],
         "Value-add": [exit_value_page_def],
         "Tools": [file_downloader_page_def, tax_extractor_page_def, scenarios_page_def],
         "Reference": [properties_page_def],
-    }
+    },
+    position="sidebar",
+    expanded=True,
 )
 
-# Optional: show "logged in as" in sidebar if running in an authenticated env
-if hasattr(st, "user"):
-    try:
-        with st.sidebar.popover(
-            label=f"Logged in as **{st.user.email.split('@')[0]}**",
-            icon=":material/account_circle:",
-        ):
-            if st.button("Log out", key="sidebar-logout", icon=":material/logout:"):
-                st.logout()
-    except Exception:
-        # If st.user is not available (e.g. local/dev), just ignore gracefully
-        pass
-
-nav.run()
+pg.run()
