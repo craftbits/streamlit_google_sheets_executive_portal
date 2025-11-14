@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
+import altair as alt
 
 import layout
-from data_access import load_dataset
+from data_access import load_dataset, dataset_mtime
 
 
 def _get_df() -> pd.DataFrame:
-    df = load_dataset("financials")
+    df = load_dataset("financials", dataset_mtime("financials"))
     df["Period"] = pd.to_datetime(df["Period"])
     df["Month"] = df["Period"].dt.to_period("M").dt.to_timestamp("M")
     return df
@@ -62,11 +63,12 @@ def main():
         noi_var = total_noi - total_budget_noi
         noi_margin = total_noi / total_rev if total_rev else 0
 
-        k1, k2, k3, k4 = st.columns(4)
+        k1, k2, k3, k4, k5 = st.columns(5)
         k1.metric("Revenue", f"${total_rev:,.0f}")
         k2.metric("Operating expenses", f"${total_opex:,.0f}")
         k3.metric("NOI", f"${total_noi:,.0f}")
         k4.metric("NOI margin", f"{noi_margin:.1%}")
+        k5.metric("NOI vs budget", f"${noi_var:,.0f}")
 
         st.markdown("### NOI vs budget by property")
         agg = (
@@ -111,8 +113,19 @@ def main():
             .reset_index()
             .sort_values("Month")
         )
-        chart_df = trend.set_index("Month")[["NOI", "Budget_NOI"]]
-        st.line_chart(chart_df)
+        trend_long = trend.melt(id_vars=["Month"], value_vars=["NOI", "Budget_NOI"], var_name="Series", value_name="Value")
+        chart = (
+            alt.Chart(trend_long)
+            .mark_line(point=True)
+            .encode(
+                x=alt.X("Month:T", title="Month"),
+                y=alt.Y("Value:Q", title="Amount"),
+                color=alt.Color("Series:N", title=None),
+                tooltip=[alt.Tooltip("Month:T", title="Month"), alt.Tooltip("Series:N"), alt.Tooltip("Value:Q", title="Amount", format=",.0f")],
+            )
+            .properties(height=300)
+        )
+        st.altair_chart(chart, use_container_width=True)
 
         layout.latest_data_badge(f"Financials through {selected_month:%b %Y}")
         layout.data_sources_expander(

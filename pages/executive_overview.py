@@ -5,26 +5,26 @@ import pandas as pd
 
 import config
 import layout
-from data_access import load_dataset
+from data_access import load_dataset, dataset_mtime
 
 
 # ---------- Data helpers ----------
 
 def _get_collections_df() -> pd.DataFrame:
-    df = load_dataset("collections")
+    df = load_dataset("collections", dataset_mtime("collections"))
     # already parsed in data_access, but harmless to ensure:
     df["Date"] = pd.to_datetime(df["Date"])
     return df
 
 
 def _get_financials_df() -> pd.DataFrame:
-    df = load_dataset("financials")
+    df = load_dataset("financials", dataset_mtime("financials"))
     df["Period"] = pd.to_datetime(df["Period"])
     return df
 
 
 def _get_properties_df() -> pd.DataFrame:
-    df = load_dataset("properties")
+    df = load_dataset("properties", dataset_mtime("properties"))
     df["Acquisition Date"] = pd.to_datetime(df["Acquisition Date"])
     return df
 
