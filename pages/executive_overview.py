@@ -5,32 +5,26 @@ import pandas as pd
 
 import config
 import layout
-import sample_data
-from gsheets_client import load_dataset_from_sheets
+from data_access import load_dataset
 
 
 # ---------- Data helpers ----------
 
 def _get_collections_df() -> pd.DataFrame:
-    df = load_dataset_from_sheets("collections")
-    if df is None or df.empty:
-        df = sample_data.sample_collections_data()
+    df = load_dataset("collections")
+    # already parsed in data_access, but harmless to ensure:
     df["Date"] = pd.to_datetime(df["Date"])
     return df
 
 
 def _get_financials_df() -> pd.DataFrame:
-    df = load_dataset_from_sheets("financials")
-    if df is None or df.empty:
-        df = sample_data.sample_financials_data()
+    df = load_dataset("financials")
     df["Period"] = pd.to_datetime(df["Period"])
     return df
 
 
 def _get_properties_df() -> pd.DataFrame:
-    df = load_dataset_from_sheets("properties")
-    if df is None or df.empty:
-        df = sample_data.sample_properties_data()
+    df = load_dataset("properties")
     df["Acquisition Date"] = pd.to_datetime(df["Acquisition Date"])
     return df
 
