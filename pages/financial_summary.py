@@ -131,3 +131,7 @@ def main():
         layout.data_sources_expander(
             ["Financials – Google Sheets dataset 'financials' (or built-in sample data)"]
         )
+
+
+if __name__ == "__main__":
+    main()

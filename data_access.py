@@ -1,7 +1,7 @@
 # data_access.py
 
 from pathlib import Path
-from typing import Literal, List
+from typing import Literal, List, Optional
 
 import pandas as pd
 import streamlit as st
@@ -32,7 +32,7 @@ def dataset_mtime(name: DatasetName) -> float:
 
 
 @st.cache_data(show_spinner=False, ttl=config.CACHE_TTL_SECONDS)
-def load_dataset(name: DatasetName, _cache_buster: float | None = None) -> pd.DataFrame:
+def load_dataset(name: DatasetName, _cache_buster: Optional[float] = None) -> pd.DataFrame:
     """
     Load a dataset from CSV. Falls back to sample_data.* if the CSV is missing
     or if required columns are not present.

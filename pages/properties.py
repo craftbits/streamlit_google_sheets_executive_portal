@@ -55,3 +55,7 @@ def main():
         layout.data_sources_expander(
             ["Properties – Google Sheets (or built-in sample data)"]
         )
+
+
+if __name__ == "__main__":
+    main()

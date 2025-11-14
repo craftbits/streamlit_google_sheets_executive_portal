@@ -225,5 +225,5 @@ def main() -> None:
 
 
 # Optional: if this file is ever used directly as a page via st.Page('pages/executive_overview.py')
-if __name__ == "__page__":
+if __name__ == "__main__":
     main()

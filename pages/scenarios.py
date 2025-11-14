@@ -103,3 +103,7 @@ def main():
             "- You can align `config.SCENARIO_DEFAULTS` with your actual T-12 NOI, GPR, "
             "occupancy, and cap rate to make these outputs more precise."
         )
+
+
+if __name__ == "__main__":
+    main()

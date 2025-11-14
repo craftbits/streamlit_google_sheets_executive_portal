@@ -77,3 +77,7 @@ def main():
                 "Properties – Google Sheets (or built-in sample data)",
             ]
         )
+
+
+if __name__ == "__main__":
+    main()
