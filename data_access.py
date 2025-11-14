@@ -1,7 +1,7 @@
 # data_access.py
 
 from pathlib import Path
-from typing import Literal, List, Optional
+from typing import Literal, List, Optional, Dict
 
 import pandas as pd
 import streamlit as st
@@ -13,13 +13,35 @@ import sample_data  # still used as a fallback
 DatasetName = Literal["collections", "financials", "properties"]
 
 
+def _get_csv_dir() -> Path:
+    """
+    Resolve the CSV data directory with a safe default of 'data' if
+    the attribute is missing from config on the server.
+    """
+    csv_dir = getattr(config, "CSV_DATA_DIR", "data")
+    return Path(csv_dir)
+
+
+def _get_csv_datasets() -> Dict[str, str]:
+    """
+    Resolve the dataset name -> filename mapping with a safe default mapping
+    if the attribute is missing from config on the server.
+    """
+    default_map: Dict[str, str] = {
+        "collections": "collections.csv",
+        "financials": "financials.csv",
+        "properties": "properties.csv",
+    }
+    return getattr(config, "CSV_DATASETS", default_map)
+
+
 def dataset_mtime(name: DatasetName) -> float:
     """
     Return the last-modified timestamp for the mapped CSV file.
     Used as a cache-buster so cached data refreshes when files change.
     """
-    base_dir = Path(config.CSV_DATA_DIR)
-    filename = config.CSV_DATASETS.get(name)
+    base_dir = _get_csv_dir()
+    filename = _get_csv_datasets().get(name)
     if not filename:
         return 0.0
     path = base_dir / filename
@@ -40,8 +62,8 @@ def load_dataset(name: DatasetName, _cache_buster: Optional[float] = None) -> pd
     name: "collections" | "financials" | "properties"
     _cache_buster: pass dataset_mtime(name) so cache refreshes when CSV updates
     """
-    base_dir = Path(config.CSV_DATA_DIR)
-    filename = config.CSV_DATASETS.get(name)
+    base_dir = _get_csv_dir()
+    filename = _get_csv_datasets().get(name)
 
     if filename:
         path = base_dir / filename
