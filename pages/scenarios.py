@@ -1,109 +1,111 @@
+# pages/scenarios.py
+
 import streamlit as st
+import pandas as pd
 
 import config
 import layout
+from data_access import load_dataset
 
 
 def main():
     left, center, right = layout.centered_columns()
 
     with center:
-        layout.page_header(":material/trending_up:", "Scenarios & what-if")
+        layout.page_header(":material/trending_up:", "Financial scenarios")
 
-        st.caption(
-            "Adjust occupancy, rent growth, and exit cap rate to explore implied "
-            "portfolio value and NOI outcomes."
+        assumptions = load_dataset("model_assumptions")
+        gl = load_dataset("gl_transactions")
+        gl["period"] = pd.to_datetime(gl["period"])
+
+        base_periods = sorted(gl["period"].unique())
+        if not base_periods:
+            st.warning("No GL data found.")
+            return
+
+        base_end = base_periods[-1]
+        st.caption(f"Base actuals through {base_end:%b %Y}")
+
+        # Base P&L (YTD)
+        base_ytd = gl[gl["period"] <= base_end]
+        pnl_base = (
+            base_ytd.groupby("account_number")["amount"]
+            .sum()
+            .reset_index()
+            .merge(
+                load_dataset("chart_of_accounts")[["account_number", "account_type"]],
+                on="account_number",
+                how="left",
+            )
         )
+        base_revenue = pnl_base[pnl_base["account_type"] == "Revenue"]["amount"].sum()
+        base_cogs = pnl_base[pnl_base["account_type"] == "COGS"]["amount"].sum()
+        base_gross = base_revenue - base_cogs
 
-        base_noi = config.SCENARIO_DEFAULTS["base_noi"]
-        base_gpr = config.SCENARIO_DEFAULTS["base_gpr"]
-        base_occ = config.SCENARIO_DEFAULTS["base_occupancy"]
-        base_cap = config.SCENARIO_DEFAULTS["base_cap_rate"]
+        # Pull some assumptions
+        def get_assump(key, default):
+            row = assumptions[assumptions["assumption_key"] == key]
+            if row.empty:
+                return default
+            try:
+                return float(row["base_value"].iloc[0])
+            except Exception:
+                return default
+
+        default_growth = get_assump("revenue_growth_rate_yoy", 0.20)
+        default_gm = get_assump("gross_margin_target", 0.60)
+        default_opex_pct = get_assump("opex_as_percent_revenue", 0.40)
 
         st.markdown("### Scenario inputs")
 
-        c1, c2 = st.columns(2)
+        c1, c2, c3 = st.columns(3)
         with c1:
-            target_occ = st.slider(
-                "Portfolio occupancy",
-                min_value=0.85,
-                max_value=0.99,
-                value=float(base_occ),
-                step=0.005,
-                format="%.1f%%",
-            )
-            rent_growth = st.slider(
-                "Rent growth vs current (YoY)",
-                min_value=-0.05,
-                max_value=0.15,
-                value=0.03,
-                step=0.005,
-                format="%.1f%%",
+            growth = st.slider(
+                "Revenue growth vs base (12-month)",
+                min_value=-0.5,
+                max_value=0.8,
+                value=float(default_growth),
+                step=0.05,
+                format="%.0f%%",
             )
         with c2:
-            cap_rate = st.slider(
-                "Exit cap rate",
-                min_value=0.035,
-                max_value=0.08,
-                value=float(base_cap),
-                step=0.0025,
-                format="%.2f%%",
+            gross_margin = st.slider(
+                "Target gross margin",
+                min_value=0.3,
+                max_value=0.85,
+                value=float(default_gm),
+                step=0.01,
+                format="%.0f%%",
             )
-            expense_delta = st.slider(
-                "Operating expense change",
-                min_value=-0.05,
-                max_value=0.10,
-                value=0.0,
-                step=0.005,
-                format="%.1f%%",
+        with c3:
+            opex_pct = st.slider(
+                "Operating expenses as % of revenue",
+                min_value=0.2,
+                max_value=0.8,
+                value=float(default_opex_pct),
+                step=0.02,
+                format="%.0f%%",
             )
 
-        # Convert slider display units (percent) to ratios
-        target_occ_ratio = target_occ
-        rent_growth_ratio = rent_growth
-        cap_rate_ratio = cap_rate
-        expense_delta_ratio = expense_delta
+        target_revenue = base_revenue * (1 + growth)
+        target_gross = target_revenue * gross_margin
+        projected_cogs = target_revenue - target_gross
+        projected_opex = target_revenue * opex_pct
+        projected_ebitda = target_gross - projected_opex
 
-        # Scenario engine (simple, transparent)
-        current_value = base_noi / base_cap if base_cap else 0
+        st.markdown("### Scenario results (next 12 months)")
 
-        occupancy_factor = target_occ_ratio / base_occ if base_occ else 1
-        revenue_factor = 1 + rent_growth_ratio
-        expense_factor = 1 + expense_delta_ratio
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            layout.metric_card("Revenue (12m)", f"${target_revenue:,.0f}")
+        with c2:
+            layout.metric_card("Gross profit", f"${target_gross:,.0f}")
+        with c3:
+            layout.metric_card("Operating expenses", f"${projected_opex:,.0f}")
+        with c4:
+            layout.metric_card("EBITDA (approx.)", f"${projected_ebitda:,.0f}")
 
-        projected_noi = base_noi * occupancy_factor * revenue_factor / expense_factor
-        scenario_value = projected_noi / cap_rate_ratio if cap_rate_ratio else 0
-
-        value_delta = scenario_value - current_value
-        noi_delta = projected_noi - base_noi
-
-        st.markdown("### Scenario results")
-
-        r1, r2, r3 = st.columns(3)
-        r1.metric(
-            "Projected NOI",
-            f"${projected_noi:,.0f}",
-            f"{noi_delta / base_noi:.1%} vs base" if base_noi else None,
+        st.caption(
+            "Tweak growth, margins, and opex to test scenarios. "
+            "You can save these combinations externally as named scenarios if desired."
         )
-        r2.metric(
-            "Implied portfolio value",
-            f"${scenario_value:,.0f}",
-            f"${value_delta:,.0f} vs base",
-        )
-        r3.metric(
-            "Current implied value (base)",
-            f"${current_value:,.0f}",
-            f"Cap rate {base_cap:.2%}",
-        )
-
-        st.markdown("### Notes")
-        st.write(
-            "- This page is meant for directional scenario analysis, not detailed asset-level "
-            "underwriting.\n"
-            "- You can align `config.SCENARIO_DEFAULTS` with your actual T-12 NOI, GPR, "
-            "occupancy, and cap rate to make these outputs more precise."
-        )
-
-
-if __name__ == "__main__":
-    main()

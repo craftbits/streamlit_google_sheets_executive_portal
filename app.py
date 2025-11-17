@@ -81,11 +81,33 @@ scenarios_page_def = st.Page(
     url_path="scenarios",
 )
 
+cfo_overview_page = st.Page(
+    "pages/cfo_financial_overview.py",
+    title="CFO dashboard",
+    icon=":material/leaderboard:",
+    url_path="cfo-dashboard",
+)
+
+pnl_statement_page = st.Page(
+    "pages/pnl_statement.py",
+    title="P&L statement",
+    icon=":material/description:",
+    url_path="pnl-statement",
+)
+
+cashflow_runway_page = st.Page(
+    "pages/cashflow_runway.py",
+    title="Cashflow & runway",
+    icon=":material/account_balance:",
+    url_path="cashflow-runway",
+)
+
 # --- Navigation menu (native) ----------------------------------------------
 pg = st.navigation(
     {
-        "": [home_page],
-        "Reports": [collections_page, financials_page],
+        "Executive": [home_page, cfo_overview_page],
+        "Reports": [collections_page, financials_page, pnl_statement_page],
+        "Cash": [cashflow_runway_page],
         "Value-add": [exit_value_page_def],
         "Tools": [file_downloader_page_def, tax_extractor_page_def, scenarios_page_def],
         "Reference": [properties_page_def],

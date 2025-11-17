@@ -1,0 +1,25 @@
+txn_id,txn_date,period,scenario,account_number,account_id,department,location,description,amount,source
+TXN-2025-06-001,2025-06-05,2025-06,Actual,4000,4000,Main,Corporate,Product sales - June batch 1,185000,QuickBooks
+TXN-2025-06-002,2025-06-18,2025-06,Actual,4010,4010,Main,Corporate,Service revenue - recurring retainers,82000,QuickBooks
+TXN-2025-06-003,2025-06-20,2025-06,Actual,5000,5000,Main,Corporate,COGS - product fulfillment,92000,QuickBooks
+TXN-2025-06-004,2025-06-25,2025-06,Actual,6000,6000,Main,Corporate,Payroll - G&A June,115000,Payroll
+TXN-2025-06-005,2025-06-25,2025-06,Actual,6200,6200,Main,Corporate,SaaS tools and platforms,18000,Bank Feed
+TXN-2025-06-006,2025-06-28,2025-06,Actual,6300,6300,Main,Corporate,Marketing campaigns,25000,Bank Feed
+TXN-2025-06-007,2025-06-30,2025-06,Actual,7000,7000,Main,Corporate,Depreciation,6000,Manual
+TXN-2025-06-008,2025-06-30,2025-06,Actual,8000,8000,Main,Corporate,Interest expense,4000,Manual
+TXN-2025-07-001,2025-07-05,2025-07,Actual,4000,4000,Main,Corporate,Product sales - July batch 1,192000,QuickBooks
+TXN-2025-07-002,2025-07-18,2025-07,Actual,4010,4010,Main,Corporate,Service revenue - recurring retainers,85000,QuickBooks
+TXN-2025-07-003,2025-07-20,2025-07,Actual,5000,5000,Main,Corporate,COGS - product fulfillment,96000,QuickBooks
+TXN-2025-07-004,2025-07-25,2025-07,Actual,6000,6000,Main,Corporate,Payroll - G&A July,117000,Payroll
+TXN-2025-07-005,2025-07-25,2025-07,Actual,6200,6200,Main,Corporate,SaaS tools and platforms,18500,Bank Feed
+TXN-2025-07-006,2025-07-28,2025-07,Actual,6300,6300,Main,Corporate,Marketing campaigns,26000,Bank Feed
+TXN-2025-07-007,2025-07-30,2025-07,Actual,7000,7000,Main,Corporate,Depreciation,6000,Manual
+TXN-2025-07-008,2025-07-30,2025-07,Actual,8000,8000,Main,Corporate,Interest expense,4000,Manual
+TXN-2025-08-001,2025-08-05,2025-08,Actual,4000,4000,Main,Corporate,Product sales - August batch 1,198000,QuickBooks
+TXN-2025-08-002,2025-08-18,2025-08,Actual,4010,4010,Main,Corporate,Service revenue - recurring retainers,88000,QuickBooks
+TXN-2025-08-003,2025-08-20,2025-08,Actual,5000,5000,Main,Corporate,COGS - product fulfillment,99400,QuickBooks
+TXN-2025-08-004,2025-08-25,2025-08,Actual,6000,6000,Main,Corporate,Payroll - G&A August,119000,Payroll
+TXN-2025-08-005,2025-08-25,2025-08,Actual,6200,6200,Main,Corporate,SaaS tools and platforms,19000,Bank Feed
+TXN-2025-08-006,2025-08-28,2025-08,Actual,6300,6300,Main,Corporate,Marketing campaigns,27000,Bank Feed
+TXN-2025-08-007,2025-08-30,2025-08,Actual,7000,7000,Main,Corporate,Depreciation,6000,Manual
+TXN-2025-08-008,2025-08-30,2025-08,Actual,8000,8000,Main,Corporate,Interest expense,4000,Manual

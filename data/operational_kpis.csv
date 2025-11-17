@@ -1,0 +1,16 @@
+period,scenario,metric_name,metric_value,unit
+2025-06,Actual,Active Customers,140,Count
+2025-06,Actual,New Customers,18,Count
+2025-06,Actual,Churned Customers,5,Count
+2025-06,Actual,Headcount,22,Count
+2025-06,Actual,Avg Revenue per Customer,1900,USD
+2025-07,Actual,Active Customers,152,Count
+2025-07,Actual,New Customers,20,Count
+2025-07,Actual,Churned Customers,8,Count
+2025-07,Actual,Headcount,23,Count
+2025-07,Actual,Avg Revenue per Customer,1925,USD
+2025-08,Actual,Active Customers,162,Count
+2025-08,Actual,New Customers,19,Count
+2025-08,Actual,Churned Customers,9,Count
+2025-08,Actual,Headcount,24,Count
+2025-08,Actual,Avg Revenue per Customer,1950,USD

@@ -1,0 +1,11 @@
+date,period,scenario,item_type,description,amount
+2025-06-01,2025-06,Actual,Opening Cash,Starting cash balance,750000
+2025-06-15,2025-06,Actual,Financing,Loan draw,100000
+2025-06-20,2025-06,Actual,Investing,Capex - equipment,-50000
+2025-06-30,2025-06,Actual,Owner Draw,Owner distribution,-30000
+2025-07-01,2025-07,Actual,Opening Cash,Starting cash balance,770000
+2025-07-20,2025-07,Actual,Investing,Capex - software,-40000
+2025-07-25,2025-07,Actual,Owner Draw,Owner distribution,-35000
+2025-08-01,2025-08,Actual,Opening Cash,Starting cash balance,755000
+2025-08-15,2025-08,Actual,Financing,Loan principal repayment,-20000
+2025-08-22,2025-08,Actual,Owner Draw,Owner distribution,-30000

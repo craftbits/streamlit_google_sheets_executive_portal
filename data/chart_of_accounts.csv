@@ -1,0 +1,19 @@
+account_id,account_number,account_name,account_type,debit_credit_normal,pl_group,report_class,ratio_group,analysis_group,external_group,parent_account_id,level,is_summary,is_cash_flow,is_revenue_driver,display_order
+4000,4000,Gross sales,Revenue,Credit,Revenue,Top-line,Revenue,Store operations,Income - Gross sales,,1,0,0,1,10
+5000,5000,Cost of goods sold,COGS,Debit,COGS,Direct costs,Gross margin,Store operations,COGS,,1,0,0,0,20
+6100,6100,Advertising,Expense,Debit,OpEx,Sales & marketing,Operating margin,Sales & marketing,Advertising,,1,0,0,0,30
+6110,6110,Banking & financial services,Expense,Debit,OpEx,G&A,Operating margin,Finance,Banking fees,,1,0,0,0,40
+6120,6120,Commissions,Expense,Debit,OpEx,Sales & marketing,Operating margin,Sales & marketing,Commissions,,1,0,0,0,50
+6130,6130,Compensation of officers,Expense,Debit,OpEx,G&A,Operating margin,Leadership,Officer comp,,1,0,0,0,60
+6140,6140,Delivery costs,Expense,Debit,OpEx,Operations,Operating margin,Store operations,Delivery,,1,0,0,0,70
+6150,6150,Depreciation & amortization,Expense,Debit,OpEx,Non-cash,EBITDA,Finance,Depreciation,,1,0,0,0,80
+6160,6160,General & administrative,Expense,Debit,OpEx,G&A,Operating margin,G&A,General & admin,,1,0,0,0,90
+6170,6170,Insurance expense,Expense,Debit,OpEx,G&A,Operating margin,Finance,Insurance,,1,0,0,0,100
+6180,6180,Professional fees,Expense,Debit,OpEx,G&A,Operating margin,Advisory,Professional fees,,1,0,0,0,110
+6190,6190,Rabbinical supervision,Expense,Debit,OpEx,Operations,Operating margin,Store operations,Other operating,,1,0,0,0,120
+6200,6200,Rent expense,Expense,Debit,OpEx,G&A,Operating margin,Facilities,Rent,,1,0,0,0,130
+6210,6210,Repairs and maintenance,Expense,Debit,OpEx,Operations,Operating margin,Facilities,Repairs & maintenance,,1,0,0,0,140
+6220,6220,Rubbish removal,Expense,Debit,OpEx,Operations,Operating margin,Facilities,Rubbish removal,,1,0,0,0,150
+6230,6230,Salaries & payroll related expenses,Expense,Debit,OpEx,Payroll,Operating margin,HR,Payroll,,1,0,0,0,160
+6240,6240,Supplies,Expense,Debit,OpEx,Operations,Operating margin,Store operations,Supplies,,1,0,0,0,170
+6250,6250,Utilities,Expense,Debit,OpEx,Operations,Operating margin,Facilities,Utilities,,1,0,0,0,180

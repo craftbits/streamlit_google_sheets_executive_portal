@@ -1,0 +1,9 @@
+assumption_key,description,base_value
+revenue_growth_rate_yoy,Annualized revenue growth rate,0.20
+gross_margin_target,Target gross margin (0-1),0.60
+opex_as_percent_revenue,Operating expenses as % of revenue,0.40
+cash_safety_months,Target cash runway (months),9
+headcount_growth_rate_yoy,Annualized headcount growth,0.15
+capex_as_percent_revenue,Capex as % of revenue,0.03
+owner_draw_monthly,Owner distributions per month,30000
+tax_rate_effective,Effective tax rate (0-1),0.21
