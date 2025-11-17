@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 
 import layout
-from data_access import load_dataset, dataset_mtime
+from data_access import load_dataset
 
 
 def _get_df() -> pd.DataFrame:
-    df = load_dataset("properties", dataset_mtime("properties"))
+    df = load_dataset("properties")
     df["Acquisition Date"] = pd.to_datetime(df["Acquisition Date"])
     return df
 

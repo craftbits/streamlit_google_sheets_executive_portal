@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 
 import layout
-from data_access import load_dataset, dataset_mtime
+from data_access import load_dataset
 
 
 def _get_df() -> pd.DataFrame:
-    df = load_dataset("collections", dataset_mtime("collections"))
+    df = load_dataset("collections")
     df["Date"] = pd.to_datetime(df["Date"])
     df["Month"] = df["Date"].dt.to_period("M").dt.to_timestamp("M")
     return df

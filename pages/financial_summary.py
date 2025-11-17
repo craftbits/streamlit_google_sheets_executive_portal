@@ -3,11 +3,11 @@ import pandas as pd
 import altair as alt
 
 import layout
-from data_access import load_dataset, dataset_mtime
+from data_access import load_dataset
 
 
 def _get_df() -> pd.DataFrame:
-    df = load_dataset("financials", dataset_mtime("financials"))
+    df = load_dataset("financials")
     df["Period"] = pd.to_datetime(df["Period"])
     df["Month"] = df["Period"].dt.to_period("M").dt.to_timestamp("M")
     return df
