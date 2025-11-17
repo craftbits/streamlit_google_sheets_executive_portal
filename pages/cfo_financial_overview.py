@@ -244,3 +244,7 @@ def main():
             st.line_chart(metric_df)
 
             st.caption("Operational metrics are maintained in `data/operational_kpis.csv`.")
+
+
+if __name__ == "__main__":
+    main()

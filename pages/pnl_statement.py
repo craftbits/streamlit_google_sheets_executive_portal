@@ -112,3 +112,7 @@ def main():
             "This P&L view is driven by GL transactions and chart of accounts. "
             "You can export this table via the built-in Streamlit download menu."
         )
+
+
+if __name__ == "__main__":
+    main()
