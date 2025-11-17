@@ -36,8 +36,14 @@ def _build_pnl_matrix(periods, scenario: str = "Actual"):
         .unstack(fill_value=0.0)
         .reset_index()
     )
+    # Rename budget period columns to non-overlapping, human-friendly labels
+    budget_period_cols = [c for c in budget.columns if isinstance(c, pd.Timestamp)]
+    budget = budget.rename(
+        columns={c: f"{c.strftime('%b %Y')} (Budget)" for c in budget_period_cols}
+    )
 
-    pnl = actual.merge(budget, on="account_number", how="left", suffixes=("", "_budget"))
+    # Merge actual + budget without relying on pandas suffixing of non-string labels
+    pnl = actual.merge(budget, on="account_number", how="left")
     return pnl, coa, periods
 
 
@@ -80,8 +86,11 @@ def main():
         for p in periods:
             label = p.strftime("%b %Y")
             display_cols.append(label)
-            pnl[label] = pnl[p].fillna(0.0)
-            pnl[label + " (Budget)"] = pnl.get(str(p) + "_budget", 0.0)
+            # Actual values (period columns are Timestamp labels)
+            pnl[label] = pnl.get(p, 0.0).fillna(0.0)
+            # Budget values (we renamed those columns to "<Mon YYYY> (Budget)")
+            budget_col_label = f"{label} (Budget)"
+            pnl[budget_col_label] = pnl.get(budget_col_label, 0.0).fillna(0.0)
 
         show_budget = st.checkbox("Show budget columns", value=True)
 
