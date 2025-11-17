@@ -10,7 +10,17 @@ import config
 import sample_data  # still used as a fallback
 
 
-DatasetName = Literal["collections", "financials", "properties"]
+DatasetName = Literal[
+    "collections",
+    "financials",
+    "properties",
+    "chart_of_accounts",
+    "gl_transactions",
+    "budget_monthly",
+    "cashflow_items",
+    "operational_kpis",
+    "model_assumptions",
+]
 
 
 def _get_csv_dir() -> Path:
@@ -53,93 +63,54 @@ def dataset_mtime(name: DatasetName) -> float:
     return 0.0
 
 
-@st.cache_data(show_spinner=False, ttl=config.CACHE_TTL_SECONDS)
-def load_dataset(name: DatasetName, _cache_buster: Optional[float] = None) -> pd.DataFrame:
-    """
-    Load a dataset from CSV. Falls back to sample_data.* if the CSV is missing
-    or if required columns are not present.
-
-    name: "collections" | "financials" | "properties"
-    _cache_buster: pass dataset_mtime(name) so cache refreshes when CSV updates
-    """
+@st.cache_data(show_spinner=False)
+def load_dataset(name: DatasetName) -> pd.DataFrame:
     base_dir = _get_csv_dir()
-    filename = _get_csv_datasets().get(name)
+    filename = _get_csv_datasets().get(name) or f"{name}.csv"
 
     if filename:
         path = base_dir / filename
         if path.exists():
             df = pd.read_csv(path)
 
-            # Parse dates & ensure dtypes
-            if name == "collections":
-                # Required columns (light schema guard)
-                required: List[str] = [
-                    "Date",
-                    "Property",
-                    "Billed Rent",
-                    "Collected Rent",
-                    "Occupancy %",
-                    "Collection %",
-                ]
-                missing = [c for c in required if c not in df.columns]
-                if missing:
-                    st.warning(
-                        f"Collections CSV missing columns: {missing}. Falling back to sample data."
-                    )
-                    return sample_data.sample_collections_data()
+            # Normalize types
+            if name in ("collections",):
+                df["Date"] = pd.to_datetime(df["Date"])
+                df["Occupancy %"] = df["Occupancy %"].astype(float)
+                df["Collection %"] = df["Collection %"].astype(float)
 
-                df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-                for col in ["Occupancy %", "Collection %", "Billed Rent", "Collected Rent", "Total Units", "Occupied Units"]:
-                    if col in df.columns:
-                        df[col] = pd.to_numeric(df[col], errors="coerce")
+            elif name in ("financials",):
+                df["Period"] = pd.to_datetime(df["Period"])
 
-            elif name == "financials":
-                required = [
-                    "Period",
-                    "Property",
-                    "Revenue",
-                    "Operating Expenses",
-                    "NOI",
-                    "Budget NOI",
-                    "NOI Variance",
-                    "NOI Margin",
-                ]
-                missing = [c for c in required if c not in df.columns]
-                if missing:
-                    st.warning(
-                        f"Financials CSV missing columns: {missing}. Falling back to sample data."
-                    )
-                    return sample_data.sample_financials_data()
+            elif name in ("properties",):
+                df["Acquisition Date"] = pd.to_datetime(df["Acquisition Date"])
 
-                df["Period"] = pd.to_datetime(df["Period"], errors="coerce")
-                for col in [
-                    "Revenue",
-                    "Operating Expenses",
-                    "NOI",
-                    "Budget NOI",
-                    "NOI Variance",
-                    "NOI Margin",
-                ]:
-                    if col in df.columns:
-                        df[col] = pd.to_numeric(df[col], errors="coerce")
+            elif name in ("gl_transactions",):
+                df["txn_date"] = pd.to_datetime(df["txn_date"])
+                if "period" in df.columns:
+                    df["period"] = pd.to_datetime(df["period"])
 
-            elif name == "properties":
-                required = ["Property", "Acquisition Date", "Units"]
-                missing = [c for c in required if c not in df.columns]
-                if missing:
-                    st.warning(
-                        f"Properties CSV missing columns: {missing}. Falling back to sample data."
-                    )
-                    return sample_data.sample_properties_data()
+            elif name in ("budget_monthly",):
+                df["period"] = pd.to_datetime(df["period"])
 
-                df["Acquisition Date"] = pd.to_datetime(df["Acquisition Date"], errors="coerce")
-                for col in ["Units", "Latest Value"]:
-                    if col in df.columns:
-                        df[col] = pd.to_numeric(df[col], errors="coerce")
+            elif name in ("cashflow_items",):
+                df["date"] = pd.to_datetime(df["date"])
+                df["period"] = pd.to_datetime(df["period"])
+
+            elif name in ("operational_kpis",):
+                df["period"] = pd.to_datetime(df["period"])
+
+            elif name in ("model_assumptions",):
+                # base_value may be numeric or text; leave as-is
+                pass
+
+            elif name in ("chart_of_accounts",):
+                # dates not needed here
+                pass
 
             return df
 
-    # Fallback: use in-memory sample data if CSV not present
+    # Fallback to sample data for the legacy three datasets only
     if name == "collections":
         return sample_data.sample_collections_data()
     if name == "financials":
@@ -147,4 +118,4 @@ def load_dataset(name: DatasetName, _cache_buster: Optional[float] = None) -> pd
     if name == "properties":
         return sample_data.sample_properties_data()
 
-    raise ValueError(f"Unknown dataset name: {name}")
+    raise ValueError(f"Dataset '{name}' not found and no fallback is defined.")
